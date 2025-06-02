@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import LoginPage from "../components/LoginPage"
 import DashboardLayout from "../components/DashboardLayout"
 import Dashboard from "../components/Dashboard"
@@ -29,7 +29,11 @@ export default function App() {
       // OPTIONAL: Send token to backend for verification
       localStorage.setItem("token", JSON.stringify({ token }));
       console.log(token);
-      <Dashboard customers={customers} orders={orders} campaigns={campaigns} />
+      useEffect(() => {
+
+
+        <Dashboard customers={customers} orders={orders} campaigns={campaigns} />
+      }, [])
 
     } catch (err) {
       console.error("Login error:", err);
@@ -127,7 +131,10 @@ export default function App() {
     // setIsLoggedIn(false)
     setCurrentPage("dashboard")
     localStorage.setItem("token", "");
-    < LoginPage onLogin={handleLogin} />
+    useEffect(() => {
+
+      < LoginPage onLogin={handleLogin} />
+    }, [])
 
   }
 
