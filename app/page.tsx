@@ -11,26 +11,30 @@ import CampaignHistory from "../components/CampaignHistory"
 
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../components/firebaseConfig";
+import { SmoothCursor } from "@/components/ui/smooth-cursor"
+import { ScrollProgress } from "@/components/magicui/scroll-progress"
+import { InteractiveGridPattern } from "@/components/magicui/interactive-grid-pattern"
 
-const handleLogin = async () => {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const token = await result.user.getIdToken();
-
-
-    console.log("Firebase ID Token:", token);
-
-    // OPTIONAL: Send token to backend for verification
-    localStorage.setItem("token", JSON.stringify({ token }));
-    console.log(token);
-
-  } catch (err) {
-    console.error("Login error:", err);
-  }
-};
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("token"))
+  const handleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const token = await result.user.getIdToken();
+
+
+      console.log("Firebase ID Token:", token);
+
+      // OPTIONAL: Send token to backend for verification
+      localStorage.setItem("token", JSON.stringify({ token }));
+      console.log(token);
+      <Dashboard customers={customers} orders={orders} campaigns={campaigns} />
+
+    } catch (err) {
+      console.error("Login error:", err);
+    }
+  };
   const [currentPage, setCurrentPage] = useState("dashboard")
 
   // Mock data that will be shared across components
@@ -122,7 +126,8 @@ export default function App() {
   const handleLogout = () => {
     // setIsLoggedIn(false)
     setCurrentPage("dashboard")
-    localStorage.setItem("token", "")
+    localStorage.setItem("token", "");
+    < LoginPage onLogin={handleLogin} />
 
   }
 
@@ -148,8 +153,15 @@ export default function App() {
   }
 
   return (
-    <DashboardLayout currentPage={currentPage} setCurrentPage={setCurrentPage} onLogout={handleLogout}>
-      {renderPage()}
-    </DashboardLayout>
+    <div className="relative h-full w-full z-10">
+      <div className="absolute top-0 left-0 w-full h-full ">
+        <DashboardLayout currentPage={currentPage} setCurrentPage={setCurrentPage} onLogout={handleLogout}>
+          <SmoothCursor />
+          <ScrollProgress />
+          <InteractiveGridPattern />
+          {renderPage()}
+        </DashboardLayout>
+      </div>
+    </div >
   )
 }
